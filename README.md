@@ -3,34 +3,37 @@
 图片上传预览
 引入第三方js:   ajaxfileupload.js
 previewImage.html:
-<div class="info_row row">
-<label><span class="icon-must">*</span>公司logo</label>
-<input type="hidden" id="logo" name="logo" />
-<div class="uploadImg"><img width="100" height="100" src="/image/uploadImg.png" title="" class="company_logo"></div>
+
+<div class="info_row row"><label><span class="icon-must">*</span>公司logo</label>
+	<input type="hidden" id="logo" name="logo" />
+	<div class="uploadImg"><img width="100" height="100" src="<%=request.getContextPath()%>/resources/image/uploadImg.png?v=807c2bdf31" title="公司logo" class="company_logo"></div>
 </div>
 
 <div class="upload_model">
-			<div class="Uploadphoto defaultmodal" id='Uploadpicture'>
-				<form action="" method="POST" enctype="multipart/form-data" id="uploadform">
-					<div class="uploadbtn clearfix">
-						<span class="selectImg" onclick="$('#previewImg').click();"> 选择图片</span>
-						<span id="uploadImg">确定</span>
-					</div>
-					<div class="imges" style="overflow: hidden">
-						<div id="preview">
-							<img id="imghead" border="0" src="" width="100" height="100">
-						</div>
-						<input type="file" style="display: none;" id="previewImg" name="file" onchange="previewImage(this)" onchange="ajaxFileUpload()">
-					</div>
-				</form>
+	<div class="Uploadphoto defaultmodal" id='Uploadpicture'>
+		<form action="" method="POST" enctype="multipart/form-data" id="uploadform">
+			<div class="uploadbtn clearfix">
+				<span class="selectImg" onclick="$('#previewImg').click();"> 选择图片</span>
+				<span id="uploadImg">确定</span>
 			</div>
-		</div>
-		<div class="imageupload">
-			<span>图片正在上传...</span>
-			<img src="<%=request.getContextPath()%>/resources/image/icons/loading-2.gif" alt="" />
+			<div class="imges" style="overflow: hidden">
+				<div id="preview">
+					<img id="imghead" border="0" src="" width="100" height="100">
+				</div>
+				<input type="file" style="display: none;" id="previewImg" name="file" onchange="previewImage(this)" onchange="ajaxFileUpload()">
+
+				</div>
+		</form>
 	</div>
+</div>
+<div class="imageupload">
+	<span>图片正在上传...</span>
+	<img src="<%=request.getContextPath()%>/resources/image/icons/loading-2.gif" alt="" />
+</div>
+		
 Common.js:
-//图片上传预览    IE是用了滤镜。
+//图片上传预览    IE是用了滤镜
+
 function previewImage(file) {
 	var MAXWIDTH = 100;
 	var MAXHEIGHT = 100;
@@ -82,35 +85,36 @@ function clacImgZoomParam(maxWidth, maxHeight, width, height) {
 }
 
 //上传图片
-	$('.uploadImg').click(function(){
-		layer.open({
-			type: 1,
-			title: "上传图片",
-			area:['500px',''],
-			offset: 'center',
-			content: $('#Uploadpicture'), //捕获的元素
-			success: function(obj, index) {
-				$('.close').click(function(){
+$('.uploadImg').click(function(){
+	layer.open({
+		type: 1,
+		title: "上传图片",
+		area:['500px',''],
+		offset: 'center',
+		content: $('#Uploadpicture'), //捕获的元素
+		success: function(obj, index) {
+			$('.close').click(function(){
+				layer.close(index);
+			})
+			$('#previewImg').change(function(){
+			   		previewImage(file);
+			   		
+			   })
+			$('#uploadImg').click(function(){
+				var srcs=$('#imghead').attr('src');
+				if(srcs){
+					$('.company_logo').attr('src',srcs);
 					layer.close(index);
-				})
-				$('#previewImg').change(function(){
-				   		previewImage(file);
-				   		
-				   })
-				$('#uploadImg').click(function(){
-					var srcs=$('#imghead').attr('src');
-					if(srcs){
-						$('.company_logo').attr('src',srcs);
-						layer.close(index);
-					}else{
-						layer.confirm("请选择公司logo！");
-					}
-				})
-			}
-		})
+				}else{
+					layer.confirm("请选择公司logo！");
+				}
+			})
+		}
 	})
+})
 	
 //后端处理   引入ajaxfileupload.js
+
 function ajaxFileUpload() {
     $.ajaxFileUpload({
         url: '/company/uploadImgLog', //用于文件上传的服务器端请求地址
